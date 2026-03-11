@@ -1,7 +1,9 @@
 
 import express from 'express';
 
-const {register,login} = await import ('./../controllers/AuthController.js');
+// const {register,login} = await import ('././controllers/AuthController.js');
+
+import {register,login} from '../controllers/AuthController.js';
 
 const router=express.Router();
 
