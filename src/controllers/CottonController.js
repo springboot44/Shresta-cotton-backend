@@ -12,15 +12,27 @@ const addcotton = async (req, res) => {
     }
 };
 
-// Delete Cotton
 const deletecotton = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log("Attempting to delete ID:", id); // LOG THIS
+
+        // Check if the ID is a valid MongoDB ObjectId
+        if (id.length !== 24) {
+            return res.status(400).json({ success: false, message: "Invalid ID format" });
+        }
+
         const deleted = await Cotton.findByIdAndDelete(id);
-        if (!deleted) return res.status(404).json({ success: false, message: "Not found" });
         
+        if (!deleted) {
+            console.log("No document found with that ID");
+            return res.status(404).json({ success: false, message: "Record not found" });
+        }
+        
+        console.log("Delete successful!");
         res.status(200).json({ success: true, message: "Cotton deleted successfully" });
     } catch (error) {
+        console.error("Controller Error:", error.message);
         res.status(500).json({ success: false, message: error.message });
     }
 };
