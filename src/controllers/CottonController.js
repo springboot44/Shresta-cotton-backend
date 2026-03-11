@@ -1,55 +1,53 @@
 import Cotton from "../models/Cotton.js";
 
-
+// Add Cotton
 const addcotton = async (req, res) => {
     try {
         const { name, quantity, price, description } = req.body;
-
-        if (!name || !quantity || !price) {
-            return res.status(400).json({ message: "Name, quantity, and price are required" });
-        }
-
         const cotton = new Cotton({ name, quantity, price, description });
         await cotton.save();
-        res.status(201).json({ message: "Cotton added successfully", cotton });
+        res.status(201).json({ success: true, message: "Cotton added", cotton });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        res.status(500).json({ success: false, message: error.message });
     }
-}
+};
 
+// Delete Cotton
+const deletecotton = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await Cotton.findByIdAndDelete(id);
+        if (!deleted) return res.status(404).json({ success: false, message: "Not found" });
+        
+        res.status(200).json({ success: true, message: "Cotton deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 const getcotton = async (req, res) => {
     try {
-        const cotton = await Cotton.find();
-        res.status(200).json({ message: "Cotton retrieved successfully", cotton });
+        const cotton = await Cotton.find().sort({ createdAt: -1 }); // Newest first
+        res.status(200).json({ success: true, cotton });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 }
 
 const todaycotton = async (req, res) => {
-
     try {
-
-
-
-        const today = new Date();
-        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
 
         const cotton = await Cotton.find({
-            createdAt: {
-                $gte: startOfDay,
-                $lte: endOfDay
-            }
+            createdAt: { $gte: startOfDay, $lte: endOfDay }
         });
 
-        res.status(200).json({ message: "Today's cotton retrieved successfully", cotton });
+        res.status(200).json({ success: true, cotton });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        res.status(500).json({ success: false, message: "Internal server error" });
     }
 }
 
-export { addcotton, getcotton ,todaycotton};
+export { addcotton, getcotton, todaycotton, deletecotton };
