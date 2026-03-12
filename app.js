@@ -20,12 +20,10 @@ import verifyToken from './src/middleware/AuthMiddleWare.js';
 const app = express();
 
  // Parse incoming JSON
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+app.use(cors({
+    origin: ["http://localhost:5173", "https://shresta-cotton.onrender.com"], // Add your frontend production URL here too
+    credentials: true
+}));
 app.use(express.json());
 
 // Connect to MongoDB
