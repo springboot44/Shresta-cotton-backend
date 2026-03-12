@@ -42,7 +42,10 @@ app.use('/api/users', verifyToken, UserRoutes); // User routes
 
 app.use('/api/cotton', CottonRoutes); // Cotton routes
 // Start server
+// Use the port Render gives you, or 3002 for local testing
 const PORT = process.env.PORT || 3002;
-app.listen(PORT, () => {
+
+// You MUST bind to '0.0.0.0' for Render to detect the port properly
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
