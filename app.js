@@ -19,17 +19,19 @@ import verifyToken from './src/middleware/AuthMiddleWare.js';
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
-
-// Middleware
-app.use(express.json()); // Parse incoming JSON
+ // Parse incoming JSON
 app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
+app.use(express.json());
+
+// Connect to MongoDB
+connectDB();
+
+// Middleware
 
 // Routes
 app.get('/', (req, res) => {
